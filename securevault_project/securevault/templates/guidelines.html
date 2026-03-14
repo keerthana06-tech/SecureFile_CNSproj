@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Guidelines — SecureVault{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-book-open"></i> User Guidelines</h1>
+  <p>Everything you need to know about using SecureVault safely and effectively.</p>
+</div>
+
+<!-- Voice Controls -->
+<div class="voice-controls section-card">
+  <h3><i class="fas fa-volume-high"></i> Voice Assistant</h3>
+  <p>Click <strong>Read Guidelines</strong> to have the guide read aloud.</p>
+  <div class="voice-btns">
+    <button class="btn-glow" id="btnPlay" onclick="voicePlay()">
+      <i class="fas fa-play"></i> Read Guidelines
+    </button>
+    <button class="btn-glow" id="btnPause" onclick="voicePause()" style="--bc:#ff6b35;display:none">
+      <i class="fas fa-pause"></i> Pause
+    </button>
+    <button class="btn-glow" id="btnStop" onclick="voiceStop()" style="--bc:#ff4444;display:none">
+      <i class="fas fa-stop"></i> Stop
+    </button>
+  </div>
+  <div class="voice-progress" id="voiceProgress" style="display:none">
+    <div class="vp-bar" id="vpBar"></div>
+  </div>
+</div>
+
+<div id="guidelineText">
+
+<div class="guide-section">
+  <h3><i class="fas fa-user-plus"></i> 1. Creating an Account</h3>
+  <p>Visit the Sign Up page and fill in your username, email address, and a strong password. Your password must be at least 6 characters. Once registered, you can log in using your credentials. Use the Remember Me option to stay logged in across browser sessions.</p>
+</div>
+
+<div class="guide-section">
+  <h3><i class="fas fa-fingerprint"></i> 2. File Tamper Detection</h3>
+  <p>Go to the Tamper Detection page from the sidebar. In Step 1, upload your original file. The system will generate a SHA-256 hash — a unique digital fingerprint. Then in Step 2, upload the file you wish to compare. The system will compare hashes instantly. If hashes match, the file is unmodified. If they differ, tampering is detected. For images, highlighted bounding boxes show the exact changed regions. For text files, a line-by-line diff is shown.</p>
+</div>
+
+<div class="guide-section">
+  <h3><i class="fas fa-vault"></i> 3. Using the Secure Vault</h3>
+  <p>The Secure Vault encrypts all your files using AES-256 Fernet encryption before storing them. No one — not even the server administrators — can read your files without your credentials. To upload, click Upload File, select a file and destination folder, then click Encrypt and Upload. To access a file, click the Access button. You will be prompted for your account password first. After verification, a one-time password (OTP) is generated. Enter the OTP to decrypt and download your file.</p>
+</div>
+
+<div class="guide-section">
+  <h3><i class="fas fa-folder-tree"></i> 4. Folder Management</h3>
+  <p>You can organize your vault files into custom folders. Click New Folder and enter a folder name. When uploading, select the target folder from the dropdown. You can delete folders at any time — note that deleting a folder does not delete the files within it; they will remain accessible.</p>
+</div>
+
+<div class="guide-section">
+  <h3><i class="fas fa-shield-halved"></i> 5. Security Best Practices</h3>
+  <p>Use a strong, unique password that includes upper and lower case letters, numbers, and symbols. Never share your OTP with anyone. Always log out when using shared computers. Regularly scan your important files for tampering. Store sensitive documents exclusively in the encrypted vault. Enable Remember Me only on personal, trusted devices.</p>
+</div>
+
+<div class="guide-section">
+  <h3><i class="fas fa-hashtag"></i> 6. Understanding Hash Values</h3>
+  <p>SHA-256 produces a fixed 64-character hexadecimal string for any file. Even a single changed byte produces a completely different hash. This makes it impossible to modify a file without detection. You can view the hash of any scanned file in the Scan History table on the Tamper Detection page.</p>
+</div>
+
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/guidelines.js') }}"></script>
+{% endblock %}

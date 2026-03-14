@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}Dashboard — SecureVault{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-gauge-high"></i> Dashboard</h1>
+  <p>Welcome back, <strong>{{ username }}</strong>. Your security status is <span class="status-ok">ACTIVE</span>.</p>
+</div>
+
+<div class="stats-grid">
+  <div class="stat-card">
+    <div class="stat-icon"><i class="fas fa-file-shield"></i></div>
+    <div class="stat-info">
+      <span class="stat-num">{{ file_count }}</span>
+      <span class="stat-label">Files Scanned</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="--c:#00cfff"><i class="fas fa-vault"></i></div>
+    <div class="stat-info">
+      <span class="stat-num">{{ vault_count }}</span>
+      <span class="stat-label">Vault Files</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="--c:#ff6b35"><i class="fas fa-shield-halved"></i></div>
+    <div class="stat-info">
+      <span class="stat-num">AES-256</span>
+      <span class="stat-label">Encryption</span>
+    </div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-icon" style="--c:#a855f7"><i class="fas fa-hashtag"></i></div>
+    <div class="stat-info">
+      <span class="stat-num">SHA-256</span>
+      <span class="stat-label">Hash Algorithm</span>
+    </div>
+  </div>
+</div>
+
+<div class="nav-cards">
+  <a href="{{ url_for('detect') }}" class="nav-card">
+    <div class="nc-icon"><i class="fas fa-fingerprint"></i></div>
+    <h3>Tamper Detection</h3>
+    <p>Upload files and detect any unauthorized modifications using SHA-256 hashing and visual diff.</p>
+    <span class="nc-arrow"><i class="fas fa-arrow-right"></i></span>
+  </a>
+  <a href="{{ url_for('vault') }}" class="nav-card">
+    <div class="nc-icon" style="--c:#00cfff"><i class="fas fa-vault"></i></div>
+    <h3>Secure Vault</h3>
+    <p>Store confidential files encrypted with AES-256. Double verification required for access.</p>
+    <span class="nc-arrow"><i class="fas fa-arrow-right"></i></span>
+  </a>
+  <a href="{{ url_for('guidelines') }}" class="nav-card">
+    <div class="nc-icon" style="--c:#a855f7"><i class="fas fa-book-open"></i></div>
+    <h3>Guidelines</h3>
+    <p>Read the full guide with voice assistant to understand all features and best practices.</p>
+    <span class="nc-arrow"><i class="fas fa-arrow-right"></i></span>
+  </a>
+  <a href="{{ url_for('profile') }}" class="nav-card">
+    <div class="nc-icon" style="--c:#ff6b35"><i class="fas fa-user-shield"></i></div>
+    <h3>My Profile</h3>
+    <p>Manage your account settings, change password, and view your activity summary.</p>
+    <span class="nc-arrow"><i class="fas fa-arrow-right"></i></span>
+  </a>
+</div>
+{% endblock %}

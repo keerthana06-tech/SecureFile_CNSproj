@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+{% block title %}Secure Vault — SecureVault{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-vault"></i> Secure Vault</h1>
+  <p>All files are encrypted with AES-256 Fernet. Double verification required for download.</p>
+</div>
+
+<!-- Toolbar -->
+<div class="vault-toolbar">
+  <button class="btn-glow" onclick="toggleModal('uploadModal')">
+    <i class="fas fa-cloud-arrow-up"></i> Upload File
+  </button>
+  <button class="btn-glow" style="--bc:#a855f7" onclick="toggleModal('folderModal')">
+    <i class="fas fa-folder-plus"></i> New Folder
+  </button>
+</div>
+
+<!-- Folders -->
+{% if folders %}
+<div class="section-card">
+  <h3><i class="fas fa-folder-tree"></i> Folders</h3>
+  <div class="folder-grid">
+    {% for folder in folders %}
+    <div class="folder-card">
+      <i class="fas fa-folder"></i>
+      <span>{{ folder.folder_name }}</span>
+      <form method="POST" action="{{ url_for('delete_folder', folder_id=folder.id) }}" style="display:inline">
+        <button class="folder-del" title="Delete folder"><i class="fas fa-trash"></i></button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endif %}
+
+<!-- Files -->
+<div class="section-card">
+  <h3><i class="fas fa-lock"></i> Encrypted Files</h3>
+  {% if files %}
+  <div class="vault-files">
+    {% for file in files %}
+    <div class="vault-file-card">
+      <div class="vf-icon"><i class="fas fa-file-lock"></i></div>
+      <div class="vf-info">
+        <span class="vf-name">{{ file.original_name }}</span>
+        <span class="vf-meta"><i class="fas fa-folder"></i> {{ file.folder_name }} &nbsp;|&nbsp;
+          <i class="fas fa-calendar"></i> {{ file.upload_date[:10] }}</span>
+        <span class="vf-hash"><i class="fas fa-hashtag"></i> {{ file.file_hash[:20] }}…</span>
+      </div>
+      <div class="vf-actions">
+        <button class="btn-glow btn-sm" style="--bc:#00cfff"
+          onclick="openDownload({{ file.id }}, '{{ file.original_name }}')">
+          <i class="fas fa-unlock"></i> Access
+        </button>
+        <form method="POST" action="{{ url_for('vault_delete', file_id=file.id) }}" style="display:inline">
+          <button class="btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p class="empty-state"><i class="fas fa-box-open"></i> Your vault is empty. Upload your first file.</p>
+  {% endif %}
+</div>
+
+<!-- Upload Modal -->
+<div class="modal-overlay" id="uploadModal" style="display:none">
+  <div class="modal-box">
+    <button class="modal-close" onclick="toggleModal('uploadModal')"><i class="fas fa-xmark"></i></button>
+    <h3><i class="fas fa-cloud-arrow-up"></i> Upload to Vault</h3>
+    <form method="POST" action="{{ url_for('vault_upload') }}" enctype="multipart/form-data">
+      <div class="field-group">
+        <label>Select File</label>
+        <input type="file" name="file" required/>
+      </div>
+      <div class="field-group">
+        <label>Destination Folder</label>
+        <select name="folder_name">
+          <option value="Root">Root</option>
+          {% for folder in folders %}
+          <option value="{{ folder.folder_name }}">{{ folder.folder_name }}</option>
+          {% endfor %}
+        </select>
+      </div>
+      <button type="submit" class="btn-glow" style="width:100%">
+        <i class="fas fa-shield-halved"></i> Encrypt & Upload
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Folder Modal -->
+<div class="modal-overlay" id="folderModal" style="display:none">
+  <div class="modal-box">
+    <button class="modal-close" onclick="toggleModal('folderModal')"><i class="fas fa-xmark"></i></button>
+    <h3><i class="fas fa-folder-plus"></i> Create New Folder</h3>
+    <form method="POST" action="{{ url_for('create_folder') }}">
+      <div class="field-group">
+        <label>Folder Name</label>
+        <input type="text" name="folder_name" placeholder="e.g. Personal Documents" required/>
+      </div>
+      <button type="submit" class="btn-glow" style="width:100%;--bc:#a855f7">
+        <i class="fas fa-plus"></i> Create Folder
+      </button>
+    </form>
+  </div>
+</div>
+
+<!-- Download / 2FA Modal -->
+<div class="modal-overlay" id="downloadModal" style="display:none">
+  <div class="modal-box">
+    <button class="modal-close" onclick="toggleModal('downloadModal')"><i class="fas fa-xmark"></i></button>
+    <h3><i class="fas fa-lock"></i> Double Verification Required</h3>
+
+    <div id="step1Div">
+      <p class="modal-info">Enter your account password to generate an OTP.</p>
+      <div class="field-group">
+        <label><i class="fas fa-key"></i> Account Password</label>
+        <input type="password" id="vaultPw" placeholder="Your login password"/>
+      </div>
+      <button class="btn-glow" style="width:100%" onclick="verifyPassword()">
+        <i class="fas fa-arrow-right"></i> Generate OTP
+      </button>
+    </div>
+
+    <div id="step2Div" style="display:none">
+      <p class="modal-info">An OTP has been generated. Enter it below:</p>
+      <div class="otp-display" id="otpDisplay"></div>
+      <div class="field-group">
+        <label><i class="fas fa-input-numeric"></i> Enter OTP</label>
+        <input type="text" id="otpInput" placeholder="6-digit code" maxlength="6"/>
+      </div>
+      <button class="btn-glow" style="width:100%;--bc:#00cfff" onclick="verifyOtpAndDownload()">
+        <i class="fas fa-unlock"></i> Decrypt & Download
+      </button>
+    </div>
+
+    <div id="modalMsg" class="modal-msg" style="display:none"></div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/vault.js') }}"></script>
+{% endblock %}

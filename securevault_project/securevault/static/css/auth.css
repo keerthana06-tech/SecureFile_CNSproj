@@ -1,0 +1,149 @@
+/* ── Auth Page Styles ─────────────────────────────────────────────────── */
+:root {
+  --bg:     #070b14;
+  --bg2:    #0d1526;
+  --border: #1a2d50;
+  --text:   #c8d8f0;
+  --text2:  #6a8ab8;
+  --accent: #00ff88;
+  --accent2:#00cfff;
+  --danger: #ff4444;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Exo 2', sans-serif;
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh; overflow: hidden;
+}
+
+canvas#bgCanvas {
+  position: fixed; inset: 0; z-index: 0;
+  pointer-events: none;
+}
+
+.auth-wrapper {
+  position: relative; z-index: 1;
+  display: flex; align-items: center; justify-content: center;
+  width: 100%; min-height: 100vh; padding: 24px;
+}
+
+.auth-card {
+  background: rgba(13,21,38,.85);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 40px 36px;
+  width: 100%; max-width: 420px;
+  backdrop-filter: blur(20px);
+  box-shadow: 0 0 60px rgba(0,255,136,.07), 0 20px 60px rgba(0,0,0,.6);
+  animation: fadeUp .5s ease;
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Brand */
+.brand { text-align: center; margin-bottom: 28px; }
+.brand-icon {
+  width: 68px; height: 68px; border-radius: 18px;
+  background: rgba(0,255,136,.1); border: 1px solid var(--accent);
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 2rem; color: var(--accent);
+  margin-bottom: 14px;
+  animation: pulse 2s ease-in-out infinite;
+}
+@keyframes pulse {
+  0%,100% { box-shadow: 0 0 0 0 rgba(0,255,136,.3); }
+  50%      { box-shadow: 0 0 0 14px rgba(0,255,136,0); }
+}
+.brand h1 {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 1.8rem; font-weight: 700; color: #fff;
+}
+.tagline { font-size: .8rem; color: var(--text2); margin-top: 4px; }
+
+/* Alert */
+.alert {
+  display: flex; align-items: center; gap: 10px;
+  padding: 11px 14px; border-radius: 8px;
+  font-size: .88rem; margin-bottom: 16px;
+}
+.alert-success { background: rgba(0,255,136,.1); color: var(--accent); border: 1px solid var(--accent); }
+.alert-error   { background: rgba(255,68,68,.1);  color: var(--danger); border: 1px solid var(--danger); }
+.alert-info    { background: rgba(0,207,255,.1);  color: var(--accent2);border: 1px solid var(--accent2); }
+
+/* Form */
+.auth-form { display: flex; flex-direction: column; gap: 16px; }
+.field-group { display: flex; flex-direction: column; gap: 6px; }
+.field-group label {
+  font-size: .82rem; color: var(--text2);
+  display: flex; align-items: center; gap: 6px;
+}
+.field-group label i { color: var(--accent); }
+.field-group input {
+  background: rgba(255,255,255,.03);
+  border: 1px solid var(--border);
+  color: var(--text); border-radius: 8px;
+  padding: 11px 14px; font-family: 'Exo 2', sans-serif;
+  font-size: .92rem; outline: none; width: 100%;
+  transition: border-color .2s, box-shadow .2s;
+}
+.field-group input:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(0,255,136,.1);
+}
+.field-group input::placeholder { color: var(--text2); }
+.pw-wrapper { position: relative; }
+.pw-wrapper input { padding-right: 42px; }
+.pw-toggle {
+  position: absolute; right: 10px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; color: var(--text2); cursor: pointer;
+  transition: color .2s;
+}
+.pw-toggle:hover { color: var(--accent); }
+
+/* Row */
+.row-between { display: flex; align-items: center; justify-content: space-between; }
+
+/* Checkbox */
+.checkbox-label {
+  display: flex; align-items: center; gap: 8px;
+  font-size: .84rem; color: var(--text2); cursor: pointer; user-select: none;
+}
+.checkbox-label input[type="checkbox"] { display: none; }
+.checkmark {
+  width: 16px; height: 16px; border: 1px solid var(--border); border-radius: 4px;
+  background: transparent; display: inline-flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.checkbox-label input:checked ~ .checkmark {
+  background: var(--accent); border-color: var(--accent);
+}
+.checkbox-label input:checked ~ .checkmark::after {
+  content: '\2713'; font-size: .65rem; color: #000; font-weight: bold;
+}
+
+/* Primary Button */
+.btn-primary {
+  display: flex; align-items: center; justify-content: center; gap: 10px;
+  padding: 13px 24px; border-radius: 8px;
+  background: linear-gradient(135deg, var(--accent), #00cfaa);
+  color: #000; border: none; font-family: 'Rajdhani', sans-serif;
+  font-size: 1rem; font-weight: 700; cursor: pointer;
+  letter-spacing: 1px; transition: all .25s;
+}
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 24px rgba(0,255,136,.5);
+}
+.btn-primary:active { transform: translateY(0); }
+
+/* Switch link */
+.switch-link {
+  text-align: center; font-size: .85rem; color: var(--text2); margin-top: 20px;
+}
+.switch-link a { color: var(--accent); font-weight: 600; }
+.switch-link a:hover { color: var(--accent2); }

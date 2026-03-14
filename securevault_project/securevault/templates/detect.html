@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+{% block title %}Tamper Detection — SecureVault{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-fingerprint"></i> File Tamper Detection</h1>
+  <p>Upload files and verify integrity using SHA-256 digital fingerprinting.</p>
+</div>
+
+<!-- Upload Section -->
+<div class="detect-grid">
+
+  <!-- Step 1: Original -->
+  <div class="detect-card" id="origCard">
+    <div class="step-badge">STEP 1</div>
+    <h3><i class="fas fa-file-circle-plus"></i> Upload Original File</h3>
+    <div class="drop-zone" id="dropZone1">
+      <i class="fas fa-cloud-arrow-up"></i>
+      <p>Drag & drop or click to upload</p>
+      <input type="file" id="origFile" hidden/>
+    </div>
+    <div class="file-preview" id="origPreview" style="display:none"></div>
+    <div class="hash-display" id="origHash" style="display:none">
+      <span class="hash-label"><i class="fas fa-hashtag"></i> SHA-256</span>
+      <code id="origHashVal"></code>
+    </div>
+    <button class="btn-glow" id="btnUploadOrig" disabled>
+      <i class="fas fa-upload"></i> Upload & Hash
+    </button>
+  </div>
+
+  <!-- Step 2: Compare -->
+  <div class="detect-card" id="cmpCard">
+    <div class="step-badge" style="--bc:#00cfff">STEP 2</div>
+    <h3><i class="fas fa-file-circle-question"></i> Upload File to Compare</h3>
+    <div class="drop-zone" id="dropZone2">
+      <i class="fas fa-cloud-arrow-up"></i>
+      <p>Drag & drop or click to upload</p>
+      <input type="file" id="cmpFile" hidden/>
+    </div>
+    <div class="file-preview" id="cmpPreview" style="display:none"></div>
+    <div class="hash-display" id="cmpHash" style="display:none">
+      <span class="hash-label"><i class="fas fa-hashtag"></i> SHA-256</span>
+      <code id="cmpHashVal"></code>
+    </div>
+    <button class="btn-glow" id="btnCompare" disabled style="--bc:#00cfff">
+      <i class="fas fa-magnifying-glass"></i> Compare Files
+    </button>
+  </div>
+
+  <!-- Result -->
+  <div class="detect-card result-card" id="resultCard" style="display:none">
+    <div class="step-badge" id="resultBadge" style="--bc:#00ff88">RESULT</div>
+    <h3><i class="fas fa-shield-halved"></i> Analysis Result</h3>
+    <div class="verdict" id="verdict"></div>
+    <div class="hash-compare" id="hashCompare"></div>
+    <div class="diff-view" id="diffView"></div>
+    <div id="diffImgWrap" style="display:none">
+      <p class="diff-title"><i class="fas fa-image"></i> Visual Differences (Red = Modified)</p>
+      <img id="diffImg" style="max-width:100%;border-radius:8px;border:1px solid #ff4444"/>
+    </div>
+    <div class="text-diff" id="textDiff" style="display:none"></div>
+    <button class="btn-glow" id="btnReport" style="display:none;--bc:#a855f7">
+      <i class="fas fa-download"></i> Download Report
+    </button>
+  </div>
+
+</div>
+
+<!-- File History -->
+<div class="section-card">
+  <h3><i class="fas fa-clock-rotate-left"></i> Scan History</h3>
+  {% if history %}
+  <table class="data-table">
+    <thead><tr><th>File</th><th>Type</th><th>SHA-256 Hash</th><th>Date</th><th>Action</th></tr></thead>
+    <tbody>
+    {% for f in history %}
+    <tr>
+      <td><i class="fas fa-file"></i> {{ f.filename }}</td>
+      <td><span class="badge">{{ f.file_type }}</span></td>
+      <td><code class="short-hash">{{ f.file_hash[:20] }}…</code></td>
+      <td>{{ f.upload_date[:16] }}</td>
+      <td>
+        <button class="btn-sm btn-danger" onclick="deleteFile({{ f.id }}, this)">
+          <i class="fas fa-trash"></i>
+        </button>
+      </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p class="empty-state"><i class="fas fa-folder-open"></i> No files scanned yet.</p>
+  {% endif %}
+</div>
+
+<div id="loadingOverlay" class="loading-overlay" style="display:none">
+  <div class="spinner"></div>
+  <p>Analyzing files…</p>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/detect.js') }}"></script>
+{% endblock %}

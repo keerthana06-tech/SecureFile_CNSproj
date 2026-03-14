@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>{% block title %}SecureVault{% endblock %}</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}"/>
+{% block head %}{% endblock %}
+</head>
+<body>
+
+{% if session.user_id %}
+<!-- Sidebar -->
+<nav class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <i class="fas fa-shield-halved"></i>
+    <span>SecureVault</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('dashboard') }}" {% if request.endpoint=='dashboard' %}class="active"{% endif %}>
+      <i class="fas fa-gauge-high"></i><span>Dashboard</span></a></li>
+    <li><a href="{{ url_for('detect') }}" {% if request.endpoint=='detect' %}class="active"{% endif %}>
+      <i class="fas fa-fingerprint"></i><span>Tamper Detection</span></a></li>
+    <li><a href="{{ url_for('vault') }}" {% if request.endpoint=='vault' %}class="active"{% endif %}>
+      <i class="fas fa-vault"></i><span>Secure Vault</span></a></li>
+    <li><a href="{{ url_for('guidelines') }}" {% if request.endpoint=='guidelines' %}class="active"{% endif %}>
+      <i class="fas fa-book-open"></i><span>Guidelines</span></a></li>
+    <li><a href="{{ url_for('profile') }}" {% if request.endpoint=='profile' %}class="active"{% endif %}>
+      <i class="fas fa-user-shield"></i><span>Profile</span></a></li>
+    <li><a href="{{ url_for('logout') }}">
+      <i class="fas fa-right-from-bracket"></i><span>Logout</span></a></li>
+  </ul>
+  <div class="sidebar-footer">
+    <i class="fas fa-circle-dot" style="color:#00ff88"></i> Logged in as <strong>{{ session.username }}</strong>
+  </div>
+</nav>
+
+<!-- Toggle button -->
+<button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+
+<main class="main-content" id="mainContent">
+{% endif %}
+
+<!-- Flash messages -->
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="flash-container">
+    {% for cat, msg in messages %}
+      <div class="toast toast-{{ cat }}">
+        <i class="fas {% if cat=='success' %}fa-circle-check{% elif cat=='error' %}fa-circle-xmark{% else %}fa-circle-info{% endif %}"></i>
+        {{ msg }}
+        <button onclick="this.parentElement.remove()"><i class="fas fa-xmark"></i></button>
+      </div>
+    {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+{% block content %}{% endblock %}
+
+{% if session.user_id %}
+</main>
+{% endif %}
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

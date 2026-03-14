@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>SecureVault — Sign Up</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+<link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Rajdhani:wght@500;600;700&family=Exo+2:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}"/>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+
+<div class="auth-wrapper">
+  <div class="auth-card">
+    <div class="brand">
+      <div class="brand-icon"><i class="fas fa-user-plus"></i></div>
+      <h1>Create Account</h1>
+      <p class="tagline">Join SecureVault — protect your files</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% for cat, msg in messages %}
+        <div class="alert alert-{{ cat }}">
+          <i class="fas {% if cat=='success' %}fa-circle-check{% elif cat=='error' %}fa-circle-xmark{% else %}fa-circle-info{% endif %}"></i>
+          {{ msg }}
+        </div>
+      {% endfor %}
+    {% endwith %}
+
+    <form method="POST" action="{{ url_for('signup') }}" class="auth-form">
+      <div class="field-group">
+        <label><i class="fas fa-user"></i> Username</label>
+        <input type="text" name="username" placeholder="Choose a username" required/>
+      </div>
+      <div class="field-group">
+        <label><i class="fas fa-envelope"></i> Email</label>
+        <input type="email" name="email" placeholder="Enter your email" required/>
+      </div>
+      <div class="field-group">
+        <label><i class="fas fa-lock"></i> Password</label>
+        <div class="pw-wrapper">
+          <input type="password" name="password" id="pw1" placeholder="Create password" required/>
+          <button type="button" class="pw-toggle" onclick="togglePw('pw1','eye1')">
+            <i class="fas fa-eye" id="eye1"></i>
+          </button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label><i class="fas fa-lock"></i> Confirm Password</label>
+        <div class="pw-wrapper">
+          <input type="password" name="confirm_password" id="pw2" placeholder="Repeat password" required/>
+          <button type="button" class="pw-toggle" onclick="togglePw('pw2','eye2')">
+            <i class="fas fa-eye" id="eye2"></i>
+          </button>
+        </div>
+      </div>
+      <button type="submit" class="btn-primary">
+        <span>CREATE ACCOUNT</span><i class="fas fa-shield-halved"></i>
+      </button>
+    </form>
+
+    <p class="switch-link">Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/auth.js') }}"></script>
+</body>
+</html>

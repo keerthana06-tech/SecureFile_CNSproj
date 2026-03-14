@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block title %}Profile — SecureVault{% endblock %}
+
+{% block content %}
+<div class="page-header">
+  <h1><i class="fas fa-user-shield"></i> My Profile</h1>
+  <p>Manage your account settings and security preferences.</p>
+</div>
+
+<div class="profile-grid">
+  <!-- Info Card -->
+  <div class="section-card">
+    <h3><i class="fas fa-id-card"></i> Account Information</h3>
+    <div class="profile-info">
+      <div class="avatar"><i class="fas fa-user-astronaut"></i></div>
+      <table class="info-table">
+        <tr><td><i class="fas fa-user"></i> Username</td><td><strong>{{ user.username }}</strong></td></tr>
+        <tr><td><i class="fas fa-envelope"></i> Email</td><td>{{ user.email }}</td></tr>
+        <tr><td><i class="fas fa-calendar"></i> Member Since</td><td>{{ user.created_at[:10] }}</td></tr>
+        <tr><td><i class="fas fa-file-shield"></i> Files Scanned</td><td>{{ file_count }}</td></tr>
+        <tr><td><i class="fas fa-vault"></i> Vault Files</td><td>{{ vault_count }}</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <!-- Change Password -->
+  <div class="section-card">
+    <h3><i class="fas fa-key"></i> Change Password</h3>
+    <form method="POST" action="{{ url_for('profile') }}" class="auth-form" style="max-width:100%">
+      <div class="field-group">
+        <label>Current Password</label>
+        <div class="pw-wrapper">
+          <input type="password" name="current_password" id="cpw" placeholder="Current password" required/>
+          <button type="button" class="pw-toggle" onclick="togglePw('cpw','ceye')">
+            <i class="fas fa-eye" id="ceye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>New Password</label>
+        <div class="pw-wrapper">
+          <input type="password" name="new_password" id="npw" placeholder="New password (min 6 chars)" required/>
+          <button type="button" class="pw-toggle" onclick="togglePw('npw','neye')">
+            <i class="fas fa-eye" id="neye"></i>
+          </button>
+        </div>
+      </div>
+      <div class="field-group">
+        <label>Confirm New Password</label>
+        <input type="password" name="confirm_password" placeholder="Repeat new password" required/>
+      </div>
+      <button type="submit" class="btn-glow" style="width:100%">
+        <i class="fas fa-floppy-disk"></i> Update Password
+      </button>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function togglePw(id, eyeId) {
+  const input = document.getElementById(id);
+  const eye   = document.getElementById(eyeId);
+  input.type  = input.type === 'password' ? 'text' : 'password';
+  eye.className = input.type === 'password' ? 'fas fa-eye' : 'fas fa-eye-slash';
+}
+</script>
+{% endblock %}
